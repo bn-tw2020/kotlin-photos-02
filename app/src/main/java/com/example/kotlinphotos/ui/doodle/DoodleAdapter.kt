@@ -2,6 +2,7 @@ package com.example.kotlinphotos.ui.doodle
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,13 +26,14 @@ import java.net.URL
 
 class DoodleAdapter(
     diffCallback: DiffUtil.ItemCallback<Photo>,
-    private val clickListener: Clickable,
+    private val onLongClick: (Int) -> Unit,
     private val saveListener: OnSaveListener
 ) : ListAdapter<Photo, DoodleAdapter.DoodleViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DoodleViewHolder {
         return DoodleViewHolder(
-            ItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+            onLongClick
         )
     }
 
@@ -39,7 +41,10 @@ class DoodleAdapter(
         holder.bind(getItem(position), position)
     }
 
-    inner class DoodleViewHolder(private val binding: ItemBinding) :
+    inner class DoodleViewHolder(
+        private val binding: ItemBinding,
+        val onLongClick: (Int) -> Unit
+    ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(photo: Photo, position: Int) {
             binding.photo = photo
@@ -49,14 +54,10 @@ class DoodleAdapter(
             }
 
             itemView.setOnLongClickListener {
-                clickListener.onLongClick()
+                onLongClick(position)
                 saveListener.showSaveButton()
-                false
-            }
-
-            itemView.setOnClickListener {
-                clickListener.onClick(position)
                 notifyDataSetChanged()
+                true
             }
         }
     }

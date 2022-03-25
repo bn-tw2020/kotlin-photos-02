@@ -10,7 +10,7 @@ import com.example.kotlinphotos.R
 import com.example.kotlinphotos.databinding.ActivityDoodleBinding
 import com.example.kotlinphotos.ui.common.PhotosDiffCallback
 
-class DoodleActivity : AppCompatActivity(), Clickable {
+class DoodleActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDoodleBinding
 
@@ -19,13 +19,14 @@ class DoodleActivity : AppCompatActivity(), Clickable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val longClick = { position: Int -> viewModel.updateEditMode(position) }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_doodle)
         binding.imageButtonBack.setOnClickListener { finish() }
-        setRecyclerView()
+        setRecyclerView(longClick)
     }
 
-    private fun setRecyclerView() {
-        val doodleAdapter = DoodleAdapter(PhotosDiffCallback(), this, object : OnSaveListener {
+    private fun setRecyclerView(longClick: (Int) -> Unit) {
+        val doodleAdapter = DoodleAdapter(PhotosDiffCallback(), longClick, object : OnSaveListener {
             override fun showSaveButton() {
                 binding.imageButtonSave.visibility = View.VISIBLE
             }
@@ -34,13 +35,4 @@ class DoodleActivity : AppCompatActivity(), Clickable {
         binding.recyclerviewDoodle.layoutManager = GridLayoutManager(this, 3)
         viewModel.photos.observe(this) { doodleAdapter.submitList(it) }
     }
-
-    override fun onLongClick() {
-        viewModel.updateEditMode()
-    }
-
-    override fun onClick(position: Int) {
-        viewModel.check(position)
-    }
-
 }

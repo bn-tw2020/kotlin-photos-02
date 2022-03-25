@@ -28,18 +28,11 @@ class DoodleViewModel(
         _photos.value = doodles
     }
 
-    fun updateEditMode() {
-        _photos.value?.forEach { photo ->
+    fun updateEditMode(position: Int) {
+        _photos.value?.forEachIndexed { index, photo ->
+            if (position == index) photo.isChecked = true
             photo.mode = EDIT
-        }
-    }
 
-    fun check(position: Int) {
-        val photo = _photos.value?.get(position)
-        photo?.let {
-            if (it.mode == EDIT) {
-                it.isChecked = true
-            }
         }
     }
 }

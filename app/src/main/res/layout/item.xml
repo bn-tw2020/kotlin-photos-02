@@ -28,8 +28,8 @@
         <CheckBox
             android:id="@+id/checkbox_select"
             check="@{photo.mode}"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:background="@drawable/selector_checkbox"
             android:button="@null"
             android:checked="@{photo.checked}"
